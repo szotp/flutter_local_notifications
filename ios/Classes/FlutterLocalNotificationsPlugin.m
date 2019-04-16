@@ -74,6 +74,11 @@ typedef NS_ENUM(NSInteger, RepeatInterval) {
 
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+    NSNumber *disabled = [NSBundle mainBundle].infoDictionary[@"flutter_local_notifications_disabled"];
+    if (disabled.boolValue) {
+        return;
+    }
+    
     channel = [FlutterMethodChannel
                methodChannelWithName:CHANNEL
                binaryMessenger:[registrar messenger]];
@@ -81,6 +86,7 @@ typedef NS_ENUM(NSInteger, RepeatInterval) {
     FlutterLocalNotificationsPlugin* instance = [[FlutterLocalNotificationsPlugin alloc] init];
     headlessRunner = [[FlutterHeadlessDartRunner alloc] init];
     // callbackChannel = [FlutterMethodChannel methodChannelWithName:CALLBACK_CHANNEL binaryMessenger:headlessRunner];
+    
     if(@available(iOS 10.0, *)) {
         UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
         center.delegate = instance;
